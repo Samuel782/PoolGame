@@ -19,26 +19,22 @@ table = Table(screen)
 def create_rack(start_x, start_y, radius):
     balls = []
     ball_id = 1
-
-    rows = 5  # 15 palle = 5 righe
-
+    rows = 5
     for row in range(rows):
         for col in range(row + 1):
-
-            x = start_x + row * (radius * 2 * 0.9)
+            # 1.732 è l'altezza di un triangolo equilatero
+            x = start_x + row * (radius * 1.732) 
             y = start_y + (col * radius * 2) - (row * radius)
-
             balls.append(Ball(x, y, 0, 0, radius, ball_id))
             ball_id += 1
-
     return balls
 
 
 # ---------------- BALLS ----------------
-cue_ball = Ball(600, 410, 0, 0, 10, 0)
+cue_ball = Ball(600, 410, 0, 0, 15, 0)
 
 balls = [cue_ball]
-balls.extend(create_rack(800, 400, 10))
+balls.extend(create_rack(800, 400, 15))
 
 
 # ---------------- STECCA ----------------
