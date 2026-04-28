@@ -42,7 +42,7 @@ class Ball:
 
         # --- FISICA ---
         self.friction = 0.985
-        self.restitution = 0.85
+        self.restitution = 0.70
 
     def move(self, dt=1):
         # Il dt che passi è in secondi (es. 0.016), lo scaliamo per il framerate
