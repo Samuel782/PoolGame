@@ -10,6 +10,7 @@ import pygame
 class Ball:
     # Colori Palle
     COLORS = {
+        0: (255, 255, 255),
         1: (255, 215, 0),
         2: (30, 144, 255),
         3: (220, 20, 60),
