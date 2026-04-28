@@ -1,4 +1,5 @@
 import pygame
+import math
 from ball import Ball
 from table import Table
 from collision import *
@@ -18,7 +19,9 @@ balls = [
 ]
 
 ## STECCA
-charging = False
+charging_up = False
+charging_down = False
+angle = 0
 power = 0
 max_power = 100
 charge_speed = 80
@@ -39,15 +42,24 @@ while running:
         if event.type == pygame.VIDEORESIZE:
             table.update()
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_n:
+                charging_up = True
+            if event.key == pygame.K_m:
+                charging_down = True
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_n:
+                charging_up = False
+            if event.key == pygame.K_m:
+                charging_down = False
+        
         if event.type == pygame.MOUSEBUTTONDOWN:
-            charging = True
+            force = power * 0.2
+            balls[0].vx += math.cos(angle) * force
+            balls[0].vy += math.sin(angle) * force
             power = 0
 
-        if event.type == pygame.MOUSEBUTTONUP and charging:
-            charging = False
-            balls[0].vx += power * 0.1
-            # balls[0].vy += power * 0.1
-            power = 0
 
     screen.blit(background, (0, 0))
 
@@ -64,23 +76,30 @@ while running:
     for ball in balls:
         ball.draw(screen)
 
-    if charging:
+    mx, my = pygame.mouse.get_pos()
+    dx = mx - balls[0].x
+    dy = my - balls[0].y
+    angle = math.atan2(dy, dx)
+
+    if charging_up:
         power += charge_speed * dt
-        if power > max_power:
-            power = max_power
+    if charging_down:
+        power -= charge_speed * dt
+    power = max(0, min(max_power, power))
 
 
-    ### UI STECCA
-    fill_width = (power / max_power) * bar_width
+    length = (power / max_power) * 100
 
-    # contorno
-    pygame.draw.rect(screen, (255, 255, 255),
-                 (bar_x, bar_y, bar_width, bar_height), 2)
+    end_x = balls[0].x + math.cos(angle) * length
+    end_y = balls[0].y + math.sin(angle) * length
 
-    # riempimento
-    pygame.draw.rect(screen, (0, 255, 0),
-                 (bar_x, bar_y, fill_width, bar_height))
-
+    pygame.draw.line(
+            screen,
+            (255, 255, 255),
+            (balls[0].x, balls[0].y),
+            (end_x, end_y),
+            3
+        )
 
 
 
